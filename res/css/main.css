@@ -1,0 +1,35 @@
+body {
+    overflow: hidden;
+}
+
+#page_home {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#browser_container {
+    display: flex;
+    align-items: stretch;
+    flex-grow: 1;
+}
+
+#browser_header {
+    height: 75px;
+    background-color: #ccc;
+}
+
+#browser_footer {
+    height: 20px;
+    background-color: #999;
+}
+
+#browser_file_view {
+    background: #bbb;
+    flex-grow: 1;
+}
+
+#browser_sidebar {
+    background: #aaa;
+    width: 200px;
+}
