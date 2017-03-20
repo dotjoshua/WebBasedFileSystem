@@ -10,13 +10,30 @@
 </head>
 <body>
     <div id="content">
-        <div class="page jsh_transparent jsh_display_none" id="page_home">
-            <div id="browser_header"></div>
-            <div id="browser_container">
-                <div id="browser_sidebar"></div>
-                <div id="browser_file_view"></div>
+        <div class="page jsh_transparent jsh_display_none" id="page_browser">
+            <div id="header">
+                <div id="top">
+                    <span id="folder_icon_gray" class="icon"></span>
+                    <span id="current_folder">current folder</span>
+                    <input id="search" placeholder="search"/>
+                    <div id="search_tray">
+                        <div class="result">result item 1</div>
+                        <div class="result">result item 2</div>
+                        <div class="result">result item 3</div>
+                    </div>
+                </div>
+                <div id="breadcrumbs">
+                    <span class="breadcrumb">path</span>
+                    <span class="breadcrumb">to</span>
+                    <span class="breadcrumb">current folder</span>
+                </div>
             </div>
-            <div id="browser_footer"></div>
+            <div id="container">
+                <div id="sidebar"></div>
+                <div id="file_view"></div>
+                <div id="details"></div>
+            </div>
+            <div id="footer">&#9400; 2017 Joshua C. Diaddigo</div>
         </div>
         <div class="page jsh_transparent jsh_display_none" id="page_404">404</div>
         <div class="page jsh_transparent jsh_display_none" id="page_403">403</div>

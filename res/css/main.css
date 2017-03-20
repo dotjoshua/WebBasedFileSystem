@@ -2,34 +2,130 @@ body {
     overflow: hidden;
 }
 
-#page_home {
+#page_browser {
     height: 100%;
     display: flex;
     flex-direction: column;
 }
 
-#browser_container {
+#page_browser > #container {
     display: flex;
     align-items: stretch;
     flex-grow: 1;
 }
 
-#browser_header {
-    height: 75px;
-    background-color: #ccc;
+#page_browser > #container > #sidebar,
+#page_browser > #container > #details {
+    background: #eee;
+    width: 300px;
 }
 
-#browser_footer {
-    height: 20px;
-    background-color: #999;
+#page_browser > #container > #details {
+    transition: 0.5s;
+    border-left: 1px solid #ccc;
 }
 
-#browser_file_view {
-    background: #bbb;
+#page_browser > #container > #sidebar {
+    border-right: 1px solid #ccc;
+}
+
+#page_browser > #container > #file_view {
+    background: #f8f8f8;
     flex-grow: 1;
 }
 
-#browser_sidebar {
-    background: #aaa;
-    width: 200px;
+#page_browser > #header {
+    line-height: 35px;
+    text-align: center;
+    box-sizing: border-box;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 50;
+}
+
+#page_browser > #header > #top {
+    padding: 15px 15px 5px 315px;
+}
+
+#page_browser > #header > #breadcrumbs {
+    width: 100%;
+    font-size: 12px;
+    line-height: 12px;
+    color: #777;
+    text-align: left;
+    border-top: 1px solid #eee;
+}
+
+#page_browser > #header > #breadcrumbs > .breadcrumb {
+    padding: 5px;
+    border-right: 1px solid #eee;
+    display: inline-block;
+}
+
+#page_browser > #header > #top > #search {
+    padding: 10px;
+    height: 100%;
+    box-sizing: border-box;
+    width: 300px;
+    float: right;
+    border-radius: 3px;
+    border: 1px solid #eee;
+    background-color: #eee;
+    outline: none;
+}
+
+#page_browser > #header > #top > #search:focus {
+    background-color: #fff;
+    border: 1px solid #eee;
+}
+
+#page_browser > #header > #top > #search_tray {
+    position: absolute;
+    top: 55px;
+    right: 15px;
+    padding: 15px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    background: #fff;
+    width: 300px;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+#page_browser > #header > #top > #search_tray > .result {
+    text-align: left;
+    line-height: 14px;
+}
+
+#page_browser > #header > #top > #search_tray > .result:not(:last-child) {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+#page_browser > #header > #top > #search_tray > .result:not(:first-child) {
+    padding-top: 10px;
+}
+
+#page_browser > #footer {
+    height: 20px;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+    text-align: right;
+    padding: 3px 10px 3px 3px;
+    color: #888;
+    font-size: 12px;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    position: relative;
+    top: 5px;
+    right: 5px;
+    background: no-repeat center;
+    background-size: 100%;
+}
+
+#folder_icon_gray {
+    background-image: url(../img/folder_icon_gray.png)
 }
