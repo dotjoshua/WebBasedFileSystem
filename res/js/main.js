@@ -22,6 +22,7 @@ function bind_events() {
 }
 
 function open_path(path) {
+    clear_details_tray();
     set_cwd(path);
 
     var files_and_folders = get_path_contents(path);
@@ -76,6 +77,8 @@ function open_path(path) {
 }
 
 function entry_click_handler(e) {
+    e.stopPropagation();
+
     var target = e.target;
     while (target.tagName != "TR") {
         target = target.parentNode;
@@ -91,9 +94,22 @@ function entry_click_handler(e) {
     update_details_tray(img_url, filename, info);
 }
 
+function clear_details_tray() {
+    var details_tray = jsh.get("#details");
+    var icon_el = details_tray.children[0];
+    var filename_el = details_tray.children[1];
+    var info_el = details_tray.children[2].children[0];
+
+    icon_el.style.backgroundImage = "none";
+    filename_el.innerText = "";
+
+    for (var i = info_el.children.length - 1; i >= 0; i--) {
+        info_el.children[i].remove();
+    }
+}
+
 function update_details_tray(icon_url, filename, info) {
     var details_tray = jsh.get("#details");
-    details_tray.style.width = "300px";
     var icon_el = details_tray.children[0];
     var filename_el = details_tray.children[1];
     var info_el = details_tray.children[2].children[0];
