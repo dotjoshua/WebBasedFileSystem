@@ -41,6 +41,10 @@ body {
     background-image: url(../img/plus_icon.png);
 }
 
+#page_browser > #container > #sidebar > #upload {
+    background-image: url(../img/upload_icon.png);
+}
+
 #page_browser > #container > #details {
     transition: 0.5s;
     border-left: 1px solid #ccc;
