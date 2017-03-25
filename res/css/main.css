@@ -20,6 +20,27 @@ body {
     width: 300px;
 }
 
+#page_browser > #container > #sidebar > .action_button {
+    border-bottom: 1px solid #ddd;
+    background-repeat: no-repeat;
+    background-size: 20px;
+    background-position: 20px 17px;
+    padding: 20px 20px 20px 50px;
+    cursor: pointer;
+}
+
+#page_browser > #container > #sidebar > .action_button:hover {
+    background-color: #ddd;
+}
+
+#page_browser > #container > #sidebar > #home {
+    background-image: url(../img/home_icon.png);
+}
+
+#page_browser > #container > #sidebar > #new_folder {
+    background-image: url(../img/plus_icon.png);
+}
+
 #page_browser > #container > #details {
     transition: 0.5s;
     border-left: 1px solid #ccc;
@@ -33,7 +54,7 @@ body {
 }
 
 #page_browser > #container > #details > #large_icon {
-    background-image: url(../img/file_icon_gray.png);
+    background-image: url(../img/file_icon.png);
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -67,7 +88,7 @@ body {
 }
 
 #page_browser > #container > #file_view {
-    background: #f8f8f8;
+    background: #eee;
     flex-grow: 1;
     overflow-y: scroll;
     -webkit-user-select: none;
@@ -77,10 +98,11 @@ body {
 #page_browser > #container > #file_view  > #entry_table {
     width: 100%;
     border-collapse: collapse;
+    background: #f8f8f8;
 }
 
 #page_browser > #container > #file_view  > #entry_table > tbody > tr:hover {
-    background: #e9e9e9;
+    background: #eee;
     cursor: pointer;
 }
 
@@ -95,8 +117,11 @@ body {
 
 #page_browser > #container > #file_view  > #entry_table > tbody > tr:first-child {
     background: #eee;
-    padding: 10px;
     box-sizing: border-box;
+}
+
+#page_browser > #container > #file_view  > #entry_table > tbody > tr:first-child > td {
+    padding-top: 12px;
 }
 
 #page_browser > #container > #file_view  > #entry_table > tbody > tr > td:nth-child(2),
@@ -109,7 +134,8 @@ body {
     text-align: center;
     box-sizing: border-box;
     background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);*/
+    border-bottom: 1px solid #ddd;
     z-index: 50;
 }
 
@@ -139,6 +165,17 @@ body {
     color: #ccc;
 }
 
+#page_browser > #header > #breadcrumbs > .breadcrumb:first-child {
+    padding: 0;
+    height: 22px;
+    width: 22px;
+    position: relative;
+    background: url(../img/home_icon.png) no-repeat center center;
+    background-size: 12px;
+    border-left: 1px solid #eee;
+    vertical-align: bottom;
+}
+
 #page_browser > #header > #top > #search {
     padding: 10px;
     height: 100%;
@@ -161,12 +198,11 @@ body {
     top: 55px;
     right: 15px;
     padding: 10px 15px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     background: #fff;
     width: 300px;
     border-radius: 3px;
     box-sizing: border-box;
-    display: none;
 }
 
 #page_browser > #header > #top > #search_tray > .result {
@@ -222,9 +258,9 @@ body {
 }
 
 #folder_icon_gray {
-    background-image: url(../img/folder_icon_gray.png)
+    background-image: url(../img/folder_icon.png)
 }
 
 #file_icon_gray {
-    background-image: url(../img/file_icon_gray.png)
+    background-image: url(../img/file_icon.png)
 }
