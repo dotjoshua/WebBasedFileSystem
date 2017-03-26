@@ -27,10 +27,26 @@ body {
     background-position: 20px 17px;
     padding: 20px 20px 20px 50px;
     cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 #page_browser > #container > #sidebar > .action_button:hover {
     background-color: #ddd;
+}
+
+.icon {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-right: 5px;
+    background: no-repeat center;
+    background-color: #f8f8f8;
+    border-radius: 50%;
+    padding: 3px;
+    background-size: 50%;
+    box-sizing: border-box;
+    vertical-align: middle;
 }
 
 #page_browser > #container > #sidebar > #home {
@@ -105,9 +121,18 @@ body {
     background: #f8f8f8;
 }
 
+#page_browser > #container > #file_view  > #entry_table > tbody > .selected_entry {
+    background: #4b84c3;
+    color: #fff;
+}
+
 #page_browser > #container > #file_view  > #entry_table > tbody > tr:hover {
     background: #eee;
     cursor: pointer;
+}
+
+#page_browser > #container > #file_view  > #entry_table > tbody > .selected_entry:hover {
+    background: #3b75aa;
 }
 
 #page_browser > #container > #file_view  > #entry_table > tbody > tr > td {
@@ -250,21 +275,10 @@ body {
     cursor: pointer;
 }
 
-.icon {
-    width: 20px;
-    height: 20px;
-    display: inline-block;
-    position: relative;
-    top: 4px;
-    margin-right: 5px;
-    background: no-repeat center;
-    background-size: contain;
-}
-
-#folder_icon_gray {
+.folder_icon_gray {
     background-image: url(../img/folder_icon.png)
 }
 
-#file_icon_gray {
+.file_icon_gray {
     background-image: url(../img/file_icon.png)
 }

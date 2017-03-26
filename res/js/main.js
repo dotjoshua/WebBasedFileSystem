@@ -22,7 +22,7 @@ function bind_events() {
 }
 
 function open_path(path) {
-    clear_details_tray();
+    deselect_all_entries();
     set_cwd(path);
 
     var files_and_folders = get_path_contents(path);
@@ -39,10 +39,13 @@ function open_path(path) {
     for (i = 0; i < files_and_folders.length; i++) {
         var name_cell = document.createElement("td");
         var icon = document.createElement("span");
+        var name_span = document.createElement("span");
         icon.classList.add("icon");
-        icon.id = files_and_folders[i].type + "_icon_gray";
+        icon.classList.add(files_and_folders[i].type + "_icon_gray");
+        name_span.innerHTML += files_and_folders[i].name;
+        name_span.classList.add("name_span");
         name_cell.appendChild(icon);
-        name_cell.innerHTML += " " + files_and_folders[i].name;
+        name_cell.appendChild(name_span);
 
         var size_cell = document.createElement("td");
         var size = files_and_folders[i].size_bytes;
@@ -84,6 +87,9 @@ function entry_click_handler(e) {
         target = target.parentNode;
     }
 
+    deselect_all_entries();
+    target.classList.add("selected_entry");
+
     var img_url = jsh.str("./res/img/{}_icon.png", target.getAttribute("type"));
     var filename = target.getAttribute("name");
     var info = {
@@ -92,6 +98,14 @@ function entry_click_handler(e) {
     };
 
     update_details_tray(img_url, filename, info);
+}
+
+function deselect_all_entries() {
+    var entries = jsh.get("#entry_table").children[0].children;
+    for (var i = 0; i < entries.length; i++) {
+        entries[i].classList.remove("selected_entry");
+    }
+    clear_details_tray();
 }
 
 function clear_details_tray() {
