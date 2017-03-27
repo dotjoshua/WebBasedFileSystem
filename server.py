@@ -46,6 +46,19 @@ def upload():
 
     return json.dumps(response)
 
+
+@app.route("/io/new_folder/", methods=["GET", "POST"])
+def new_folder():
+    response = {}
+
+    try:
+        new_folder_name = request.args.get("name")
+        new_path_name = request.args.get("path")
+    except Exception as e:
+        response["error"] = str(e)
+
+    return json.dumps(response)
+
 if __name__ == "__main__":
     import logging
     from logging import FileHandler, Formatter

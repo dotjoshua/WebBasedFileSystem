@@ -23,6 +23,8 @@ function bind_events() {
     });
 
     jsh.get("#upload").addEventListener("click", on_upload_click);
+
+    jsh.get("#new_folder").addEventListener("click", on_new_folder_click);
 }
 
 function open_path(path) {
@@ -161,7 +163,7 @@ function get_path_contents(path) {
 }
 
 function set_cwd(path_list) {
-    cwd = jsh.str("/{}", path_list.join("/"));
+    cwd = path_list;
     jsh.get("#current_folder").innerText = path_list[path_list.length - 1] || "home";
 
     var breadcrumbs = jsh.get("#breadcrumbs");
@@ -226,6 +228,25 @@ function on_upload_click(e) {
     }).open();
 }
 
+function on_new_folder_click(e) {
+    var contents = document.createElement("div");
+    var new_folder_name_input = document.createElement("input");
+    new_folder_name_input.id = "new_folder_name_input";
+    new_folder_name_input.setAttribute("placeholder", "new folder name");
+    contents.appendChild(new_folder_name_input);
+
+    new jsh.Alert({
+        title: "New Folder",
+        show_cancel: true,
+        message: contents,
+        button_text: "create",
+        button_callback: function() {
+            var name = jsh.get("#new_folder_name_input").value;
+            new_folder(name);
+        }
+    }).open();
+}
+
 function upload_file(file) {
     jsh.get("#upload_progress_outer").classList.remove("jsh_display_none");
     setTimeout(function() {
@@ -237,6 +258,7 @@ function upload_file(file) {
         var response = JSON.parse(request.responseText);
 
         if (response["error"] == undefined) {
+            open_path(cwd);
             new jsh.Alert({
                 message: "Upload complete!",
                 title: "Success"
@@ -255,7 +277,31 @@ function upload_file(file) {
 
     request.open("POST", "io/upload/", true);
     request.setRequestHeader("filename", file.name);
-    request.setRequestHeader("path", cwd);
+    request.setRequestHeader("path", jsh.str("/{}/", cwd.join("/")));
     request.setRequestHeader("Content-Type", "application/octet-stream");
     request.send(file);
 }
+
+function new_folder(name) {
+    new jsh.Request({
+        url: "io/new_folder",
+        data: {
+            name: name,
+            path: jsh.str("/{}/", cwd.join("/"))
+        }, callback: function(response) {
+            if (response["error"] == undefined) {
+                open_path(cwd);
+                new jsh.Alert({
+                    message: "Folder created!",
+                    title: "Success"
+                }).open();
+            } else {
+                new jsh.Alert({
+                    message: response["error"],
+                    title: "Error"
+                }).open();
+            }
+        }
+    }).send();
+}
+
