@@ -30,31 +30,33 @@ function bind_events() {
 function open_path(path) {
     deselect_all_entries();
     set_cwd(path);
+    get_path_contents(path, function(response) {
+        update_entry_table(response, path);
+    });
+}
 
-    var files_and_folders = get_path_contents(path);
-
+function update_entry_table(entries, path) {
     var entry_table = jsh.get("#file_view > #entry_table").children[0];
     for (var i = entry_table.children.length - 1; i > 0; i--) {
         entry_table.children[i].remove()
     }
 
-
     var size_units = ["bytes", "kb", "mb", "gb", "tb"];
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
         "November", "December"];
-    for (i = 0; i < files_and_folders.length; i++) {
+    for (i = 0; i < entries.length; i++) {
         var name_cell = document.createElement("td");
         var icon = document.createElement("span");
         var name_span = document.createElement("span");
         icon.classList.add("icon");
-        icon.classList.add(files_and_folders[i].type + "_icon_gray");
-        name_span.innerHTML += files_and_folders[i].name;
+        icon.classList.add(entries[i].type + "_icon_gray");
+        name_span.innerHTML += entries[i].name;
         name_span.classList.add("name_span");
         name_cell.appendChild(icon);
         name_cell.appendChild(name_span);
 
         var size_cell = document.createElement("td");
-        var size = files_and_folders[i].size_bytes;
+        var size = entries[i]["size_bytes"];
         var size_index = 0;
         while (size > 1024) {
             size /= 1024;
@@ -65,17 +67,17 @@ function open_path(path) {
 
         var date_added_cell = document.createElement("td");
         var date_added = new Date();
-        date_added.setTime(files_and_folders[i].date_added);
+        date_added.setTime(entries[i]["date_added"]);
         var date_added_text = jsh.str("{} {}, {}", months[date_added.getMonth()], date_added.getDate(),
             date_added.getFullYear());
         date_added_cell.innerText = date_added_text;
 
         var table_entry = document.createElement("tr");
-        table_entry.setAttribute("type", files_and_folders[i].type);
-        table_entry.setAttribute("path", jsh.str("/{}/{}{}", path.join("/"), files_and_folders[i].name,
-            files_and_folders[i].type == "folder" ? "/" : ""));
+        table_entry.setAttribute("type", entries[i].type);
+        table_entry.setAttribute("path", jsh.str("/{}/{}{}", path.join("/"), entries[i].name,
+            entries[i].type == "folder" ? "/" : ""));
         table_entry.appendChild(name_cell);
-        table_entry.setAttribute("name", files_and_folders[i].name);
+        table_entry.setAttribute("name", entries[i].name);
         table_entry.appendChild(size_cell);
         table_entry.setAttribute("size", size);
         table_entry.appendChild(date_added_cell);
@@ -157,9 +159,17 @@ function update_details_tray(icon_url, filename, info) {
     }
 }
 
-function get_path_contents(path) {
-    return [{type: "folder", name: "sample folder", date_added: 1490401135674, size_bytes: -1},
-        {type: "file", name: "sample file 1.txt", date_added: 1490401135674, size_bytes: 10649}]
+function get_path_contents(path, callback) {
+    new jsh.Request({
+        url: "io/list_dir",
+        parse_json: true,
+        data: {
+            name: name,
+            path: jsh.str("/{}/", path.join("/"))
+        }, callback: function(response) {
+            callback(response)
+        }
+    }).send();
 }
 
 function set_cwd(path_list) {

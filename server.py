@@ -1,12 +1,13 @@
 from flask import *
 import json
-import os
+import io_utils
 
 DEBUG = True
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024  # 1GB
 app.config['PROPAGATE_EXCEPTIONS'] = True
+
 
 @app.errorhandler(403)
 def forbidden(e):
@@ -41,6 +42,7 @@ def upload():
         filename = request.headers.get("filename")
         path = request.headers.get("path")
         data = request.data
+        io_utils.create_file(filename, path, data)
     except Exception as e:
         response["error"] = str(e)
 
@@ -53,15 +55,25 @@ def new_folder():
 
     try:
         new_folder_name = request.args.get("name")
-        new_path_name = request.args.get("path")
+        path = request.args.get("path")
+        io_utils.create_new_folder(new_folder_name, path)
     except Exception as e:
         response["error"] = str(e)
 
     return json.dumps(response)
 
+
+@app.route("/io/list_dir/", methods=["GET", "POST"])
+def list_dir():
+    path = request.args.get("path")
+    response = io_utils.list_dir(path)
+    return json.dumps(response)
+
+
 if __name__ == "__main__":
     import logging
     from logging import FileHandler, Formatter
+
     file_handler = FileHandler("errors.log")
     file_handler.setLevel(logging.WARNING)
     file_handler.setFormatter(Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
