@@ -2,25 +2,25 @@ body {
     overflow: hidden;
 }
 
-#page_browser {
+#page_view {
     height: 100%;
     display: flex;
     flex-direction: column;
 }
 
-#page_browser > #container {
+#page_view > #container {
     display: flex;
     align-items: stretch;
     flex-grow: 1;
 }
 
-#page_browser > #container > #sidebar,
-#page_browser > #container > #details {
+#page_view > #container > #sidebar,
+#page_view > #container > #details {
     background: #eee;
     width: 300px;
 }
 
-#page_browser > #container > #sidebar > .action_button {
+#page_view > #container > #sidebar > .action_button {
     border-bottom: 1px solid #ddd;
     background-repeat: no-repeat;
     background-size: 20px;
@@ -31,7 +31,7 @@ body {
     user-select: none;
 }
 
-#page_browser > #container > #sidebar > .action_button:hover {
+#page_view > #container > #sidebar > .action_button:hover {
     background-color: #ddd;
 }
 
@@ -49,31 +49,31 @@ body {
     vertical-align: middle;
 }
 
-#page_browser > #container > #sidebar > #home {
+#page_view > #container > #sidebar > #home {
     background-image: url(../img/home_icon.png);
 }
 
-#page_browser > #container > #sidebar > #new_folder {
+#page_view > #container > #sidebar > #new_folder {
     background-image: url(../img/plus_icon.png);
 }
 
-#page_browser > #container > #sidebar > #upload {
+#page_view > #container > #sidebar > #upload {
     background-image: url(../img/upload_icon.png);
 }
 
-#page_browser > #container > #details {
+#page_view > #container > #details {
     transition: 0.5s;
     border-left: 1px solid #ccc;
     padding: 10px;
 }
 
-#page_browser > #container > #details > #filename {
+#page_view > #container > #details > #filename {
     text-align: center;
     font-weight: 800;
     margin-bottom: 30px;
 }
 
-#page_browser > #container > #details > #large_icon {
+#page_view > #container > #details > #large_icon {
     background-image: none;
     background-size: contain;
     background-position: center;
@@ -84,30 +84,30 @@ body {
     margin-right: auto;
 }
 
-#page_browser > #container > #details > #info {
+#page_view > #container > #details > #info {
     width: 100%;
     font-size: 12px;
     border-collapse: collapse;
 }
 
-#page_browser > #container > #details > #info > tbody > tr:first-child {
+#page_view > #container > #details > #info > tbody > tr:first-child {
     border-top: 1px solid #ddd;
 }
 
 
-#page_browser > #container > #details > #info > tbody > tr {
+#page_view > #container > #details > #info > tbody > tr {
     border-bottom: 1px solid #ddd;
 }
 
-#page_browser > #container > #details > #info > tbody > tr > td {
+#page_view > #container > #details > #info > tbody > tr > td {
     padding: 5px;
 }
 
-#page_browser > #container > #sidebar {
+#page_view > #container > #sidebar {
     border-right: 1px solid #ccc;
 }
 
-#page_browser > #container > #file_view {
+#page_view > #container > #file_view {
     background: #eee;
     flex-grow: 1;
     overflow-y: scroll;
@@ -115,50 +115,50 @@ body {
     user-select: none;
 }
 
-#page_browser > #container > #file_view  > #entry_table {
+#page_view > #container > #file_view  > #entry_table {
     width: 100%;
     border-collapse: collapse;
     background: #f8f8f8;
 }
 
-#page_browser > #container > #file_view  > #entry_table > tbody > .selected_entry {
+#page_view > #container > #file_view  > #entry_table > tbody > .selected_entry {
     background: #4b84c3;
     color: #fff;
 }
 
-#page_browser > #container > #file_view  > #entry_table > tbody > tr:hover {
+#page_view > #container > #file_view  > #entry_table > tbody > tr:hover {
     background: #eee;
     cursor: pointer;
 }
 
-#page_browser > #container > #file_view  > #entry_table > tbody > .selected_entry:hover {
+#page_view > #container > #file_view  > #entry_table > tbody > .selected_entry:hover {
     background: #3b75aa;
 }
 
-#page_browser > #container > #file_view  > #entry_table > tbody > tr > td {
+#page_view > #container > #file_view  > #entry_table > tbody > tr > td {
     padding: 10px;
     border-bottom: 1px solid #ddd;
 }
 
-#page_browser > #container > #file_view  > #entry_table > tbody > tr:first-child > td:not(:last-child) {
+#page_view > #container > #file_view  > #entry_table > tbody > tr:first-child > td:not(:last-child) {
     border-right: 1px solid #ddd;
 }
 
-#page_browser > #container > #file_view  > #entry_table > tbody > tr:first-child {
+#page_view > #container > #file_view  > #entry_table > tbody > tr:first-child {
     background: #eee;
     box-sizing: border-box;
 }
 
-#page_browser > #container > #file_view  > #entry_table > tbody > tr:first-child > td {
+#page_view > #container > #file_view  > #entry_table > tbody > tr:first-child > td {
     padding-top: 12px;
 }
 
-#page_browser > #container > #file_view  > #entry_table > tbody > tr > td:nth-child(2),
-#page_browser > #container > #file_view  > #entry_table > tbody > tr > td:nth-child(3) {
+#page_view > #container > #file_view  > #entry_table > tbody > tr > td:nth-child(2),
+#page_view > #container > #file_view  > #entry_table > tbody > tr > td:nth-child(3) {
     width: 200px
 }
 
-#page_browser > #header {
+#page_view > #header {
     line-height: 35px;
     text-align: center;
     box-sizing: border-box;
@@ -168,11 +168,11 @@ body {
     z-index: 50;
 }
 
-#page_browser > #header > #top {
+#page_view > #header > #top {
     padding: 15px 15px 15px 315px;
 }
 
-#page_browser > #header > #breadcrumbs {
+#page_view > #header > #breadcrumbs {
     width: 100%;
     font-size: 12px;
     line-height: 12px;
@@ -183,18 +183,18 @@ body {
     box-sizing: border-box;
 }
 
-#page_browser > #header > #breadcrumbs > .breadcrumb {
+#page_view > #header > #breadcrumbs > .breadcrumb {
     padding: 5px;
     border-right: 1px solid #eee;
     display: inline-block;
     cursor: pointer;
 }
 
-#page_browser > #header > #breadcrumbs > .breadcrumb:hover {
+#page_view > #header > #breadcrumbs > .breadcrumb:hover {
     color: #ccc;
 }
 
-#page_browser > #header > #breadcrumbs > .breadcrumb:first-child {
+#page_view > #header > #breadcrumbs > .breadcrumb:first-child {
     padding: 0;
     height: 22px;
     width: 22px;
@@ -205,7 +205,7 @@ body {
     vertical-align: bottom;
 }
 
-#page_browser > #header > #top > #search {
+#page_view > #header > #top > #search {
     padding: 10px;
     height: 100%;
     box-sizing: border-box;
@@ -217,12 +217,12 @@ body {
     outline: none;
 }
 
-#page_browser > #header > #top > #search:focus {
+#page_view > #header > #top > #search:focus {
     background-color: #fff;
     border: 1px solid #eee;
 }
 
-#page_browser > #header > #top > #search_tray {
+#page_view > #header > #top > #search_tray {
     position: absolute;
     top: 55px;
     right: 15px;
@@ -234,7 +234,7 @@ body {
     box-sizing: border-box;
 }
 
-#page_browser > #header > #top > #search_tray > .result {
+#page_view > #header > #top > #search_tray > .result {
     padding: 10px;
     box-sizing: border-box;
     text-align: left;
@@ -242,15 +242,15 @@ body {
     cursor: pointer;
 }
 
-#page_browser > #header > #top > #search_tray > .result:hover {
+#page_view > #header > #top > #search_tray > .result:hover {
     background: #f8f8f8;
 }
 
-#page_browser > #header > #top > #search_tray > .result:not(:last-child) {
+#page_view > #header > #top > #search_tray > .result:not(:last-child) {
     border-bottom: 1px solid #eee;
 }
 
-#page_browser > #footer {
+#page_view > #footer {
     height: 20px;
     background-color: #fff;
     border-top: 1px solid #ccc;
@@ -281,4 +281,27 @@ body {
 
 .file_icon_gray {
     background-image: url(../img/file_icon.png)
+}
+
+#upload_progress_outer {
+    width: 100%;
+    height: 20px;
+    background: #ccc;
+    margin-top: 10px;
+    transition: 0.1s;
+}
+
+#upload_progress_inner {
+    width: 0;
+    height: 100%;
+    background: #4b84c3;
+}
+
+#jsh_alert_container {
+    background: none;
+}
+
+#jsh_alert_window {
+    background: #fff;
+    border: 1px solid #999;
 }

@@ -1,6 +1,8 @@
+var cwd = "";
+
 window.onload = function() {
     bind_events();
-
+    jsh.pages.view.open();
     open_path(["path", "to", "current folder"]);
 };
 
@@ -19,6 +21,8 @@ function bind_events() {
     jsh.get("#search").addEventListener("focusout", function() {
         search_tray.classList.add("jsh_display_none");
     });
+
+    jsh.get("#upload").addEventListener("click", on_upload_click);
 }
 
 function open_path(path) {
@@ -157,6 +161,7 @@ function get_path_contents(path) {
 }
 
 function set_cwd(path_list) {
+    cwd = jsh.str("/{}", path_list.join("/"));
     jsh.get("#current_folder").innerText = path_list[path_list.length - 1] || "home";
 
     var breadcrumbs = jsh.get("#breadcrumbs");
@@ -191,4 +196,66 @@ function on_breadcrumb_click(e) {
     }
 
     open_path(new_cwd);
+}
+
+function on_upload_click(e) {
+    var contents = document.createElement("div");
+    var upload_input = document.createElement("input");
+    upload_input.id = "upload_input";
+    upload_input.type = "file";
+    contents.appendChild(upload_input);
+
+    var upload_progress_outer = document.createElement("div");
+    upload_progress_outer.id = "upload_progress_outer";
+    upload_progress_outer.classList.add("jsh_display_none");
+    upload_progress_outer.classList.add("jsh_transparent");
+    var upload_progress_inner = document.createElement("div");
+    upload_progress_inner.id = "upload_progress_inner";
+    upload_progress_outer.appendChild(upload_progress_inner);
+    contents.appendChild(upload_progress_outer);
+
+    new jsh.Alert({
+        title: "Upload File",
+        show_cancel: true,
+        message: contents,
+        button_text: "upload",
+        button_callback: function() {
+            var file = document.getElementById("upload_input").files[0];
+            upload_file(file);
+        }
+    }).open();
+}
+
+function upload_file(file) {
+    jsh.get("#upload_progress_outer").classList.remove("jsh_display_none");
+    setTimeout(function() {
+        jsh.get("#upload_progress_outer").classList.remove("jsh_transparent");
+    }, 10);
+
+    var request = new XMLHttpRequest();
+    request.onloadend = function() {
+        var response = JSON.parse(request.responseText);
+
+        if (response["error"] == undefined) {
+            new jsh.Alert({
+                message: "Upload complete!",
+                title: "Success"
+            }).open();
+        } else {
+            new jsh.Alert({
+                message: response["error"],
+                title: "Error"
+            }).open();
+        }
+    };
+    request.upload.addEventListener("progress", function(e) {
+        var percent = (e["loaded"] / e["total"] * 100);
+        jsh.get("#upload_progress_inner").setAttribute("style", "width: " + percent + "%");
+    }, false);
+
+    request.open("POST", "io/upload/", true);
+    request.setRequestHeader("filename", file.name);
+    request.setRequestHeader("path", cwd);
+    request.setRequestHeader("Content-Type", "application/octet-stream");
+    request.send(file);
 }
