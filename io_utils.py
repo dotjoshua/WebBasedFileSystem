@@ -73,9 +73,16 @@ def search(search_query):
     :param search_query: a string of the user's search query.
     :return: a list of the full paths of 1-10 items. 
     """
+    if len(search_query) < 4:
+        raise IOUtilException("query too short")
+
     return ["/search/result/item/1.txt", "/search/result/item/2.txt", "/search/result/item/3.txt"]
 
 
 class IOUtilException(Exception):
-    def __init__(self, *args):
-        super(IOUtilException).__init__(*args)
+    def __init__(self, msg, *args):
+        self.msg = msg
+        super().__init__(IOUtilException, msg, *args)
+
+    def __str__(self):
+        return self.msg

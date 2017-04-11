@@ -18,8 +18,14 @@ function bind_events() {
         search_tray.classList.remove("jsh_display_none");
     });
 
-    jsh.get("#search").addEventListener("focusout", function() {
-        search_tray.classList.add("jsh_display_none");
+    jsh.get("#search").addEventListener("focusout", function(e) {
+        setTimeout(function() {
+            search_tray.classList.add("jsh_display_none");
+        }, 100);
+    });
+
+    jsh.get("#search").addEventListener("keyup", function(e) {
+        search(e.target.value);
     });
 
     jsh.get("#upload").addEventListener("click", on_upload_click);
@@ -255,6 +261,43 @@ function on_new_folder_click(e) {
             new_folder(name);
         }
     }).open();
+}
+
+function search(query) {
+    new jsh.Request({
+        url: "io/search",
+        parse_json: true,
+        data: {
+            name: name,
+            query: query
+        }, callback: function(response) {
+            var search_tray = jsh.get("#search_tray");
+            search_tray.innerHTML = "";
+            if (response["error"] === undefined) {
+                for (var i = 0; i < response.length; i++) {
+                    var filename = response[i].split("/").pop();
+                    var path = response[i].slice(0, response[i].length - filename.length);
+
+                    var result = document.createElement("div");
+                    result.innerText = filename;
+                    result.classList.add("result");
+                    result.setAttribute("path", path);
+                    result.addEventListener("mousedown", function(e) {
+                        var path_list = e.target.getAttribute("path").split("/").filter(function(x) {
+                            return x !== ''
+                        });
+                        open_path(path_list);
+                    });
+                    search_tray.appendChild(result);
+                }
+            } else {
+                result = document.createElement("div");
+                result.innerText = response["error"];
+                result.classList.add("result");
+                search_tray.appendChild(result);
+            }
+        }
+    }).send();
 }
 
 function upload_file(file) {

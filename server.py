@@ -59,7 +59,6 @@ def new_folder():
         io_utils.create_new_folder(new_folder_name, path)
     except Exception as e:
         response["error"] = str(e)
-
     return json.dumps(response)
 
 
@@ -72,8 +71,12 @@ def list_dir():
 
 @app.route("/io/search/", methods=["GET", "POST"])
 def search():
-    path = request.args.get("path")
-    response = io_utils.search(path)
+    response = {}
+    try:
+        query = request.args.get("query")
+        response = io_utils.search(query)
+    except Exception as e:
+        response["error"] = str(e)
     return json.dumps(response)
 
 
