@@ -63,7 +63,7 @@ function update_entry_table(entries, path) {
             size_index += 1;
         }
         size = +size.toFixed(2);
-        size_cell.innerText = size == -1 ? "-" : jsh.str("{} {}", size, size_units[size_index]);
+        size_cell.innerText = size === -1 ? "-" : jsh.str("{} {}", size, size_units[size_index]);
 
         var date_added_cell = document.createElement("td");
         var date_added = new Date();
@@ -75,7 +75,7 @@ function update_entry_table(entries, path) {
         var table_entry = document.createElement("tr");
         table_entry.setAttribute("type", entries[i].type);
         table_entry.setAttribute("path", jsh.str("/{}/{}{}", path.join("/"), entries[i].name,
-            entries[i].type == "folder" ? "/" : ""));
+            entries[i].type === "folder" ? "/" : ""));
         table_entry.appendChild(name_cell);
         table_entry.setAttribute("name", entries[i].name);
         table_entry.appendChild(size_cell);
@@ -91,7 +91,7 @@ function entry_click_handler(e) {
     e.stopPropagation();
 
     var target = e.target;
-    while (target.tagName != "TR") {
+    while (target.tagName !== "TR") {
         target = target.parentNode;
     }
 
@@ -101,7 +101,7 @@ function entry_click_handler(e) {
     var img_url = jsh.str("./res/img/{}_icon.png", target.getAttribute("type"));
     var filename = target.getAttribute("name");
     var info = {
-        "size":  target.getAttribute("type") == "folder" ? "-" : target.getAttribute("size"),
+        "size":  target.getAttribute("type") === "folder" ? "-" : target.getAttribute("size"),
         "date added": target.getAttribute("date_added")
     };
 
@@ -267,7 +267,7 @@ function upload_file(file) {
     request.onloadend = function() {
         var response = JSON.parse(request.responseText);
 
-        if (response["error"] == undefined) {
+        if (response["error"] === undefined) {
             open_path(cwd);
             new jsh.Alert({
                 message: "Upload complete!",
@@ -299,7 +299,7 @@ function new_folder(name) {
             name: name,
             path: jsh.str("/{}/", cwd.join("/"))
         }, callback: function(response) {
-            if (response["error"] == undefined) {
+            if (response["error"] === undefined) {
                 open_path(cwd);
                 new jsh.Alert({
                     message: "Folder created!",
