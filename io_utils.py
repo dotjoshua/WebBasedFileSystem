@@ -58,8 +58,22 @@ def delete_item(path):
     and folders in the path before removing the path.
 
     :param path: A string of a path. May contain a filename or a folder. 
+    :return: None
     """
-    pass
+    return None
+
+
+def search(search_query):
+    """
+    Searches the index table and returns 1-10 results.
+    
+     Raises an IOUtilException if:
+        - no results were found
+
+    :param search_query: a string of the user's search query.
+    :return: a list of the full paths of 1-10 items. 
+    """
+    return ["/search/result/item/1.txt", "/search/result/item/2.txt", "/search/result/item/3.txt"]
 
 
 class IOUtilException(Exception):

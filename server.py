@@ -70,6 +70,27 @@ def list_dir():
     return json.dumps(response)
 
 
+@app.route("/io/search/", methods=["GET", "POST"])
+def search():
+    path = request.args.get("path")
+    response = io_utils.search(path)
+    return json.dumps(response)
+
+
+@app.route("/io/get_file_contents/", methods=["GET", "POST"])
+def get_file_contents():
+    path = request.args.get("path")
+    response = io_utils.get_file_contents(path)
+    return response
+
+
+@app.route("/io/delete_item/", methods=["GET", "POST"])
+def delete_item():
+    path = request.args.get("path")
+    io_utils.delete_item(path)
+    return ""
+
+
 if __name__ == "__main__":
     import logging
     from logging import FileHandler, Formatter
