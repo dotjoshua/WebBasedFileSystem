@@ -42,14 +42,14 @@ def list_dir(path):
             {"type": "file", "name": "sample file 1.txt", "date_added": 1490401135674, "size_bytes": 10649}]
 
 
-def get_file_contents(path):
+def get_file_contents_location(path):
     """
-    Opens a given file and returns a byte string of the data (use "rb").
+    Opens a given file and returns the name of the actual file on disk.
 
     :param path: the path of the file including the filename and extension
-    :return: the results of .read()
+    :return: a string of the true file
     """
-    return b""
+    return "SAMP-LEJP-G93R-DH3E"
 
 
 def delete_item(path):

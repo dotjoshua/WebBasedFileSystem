@@ -1,6 +1,7 @@
 from flask import *
 import json
 import io_utils
+import io
 
 DEBUG = True
 
@@ -83,8 +84,8 @@ def search():
 @app.route("/io/get_file_contents/", methods=["GET", "POST"])
 def get_file_contents():
     path = request.args.get("path")
-    response = io_utils.get_file_contents(path)
-    return response
+    filename = io_utils.get_file_contents_location(path)
+    return send_from_directory("./file_data/", filename)
 
 
 @app.route("/io/delete_item/", methods=["GET", "POST"])
