@@ -1,4 +1,5 @@
 import random
+import sqlite3
 
 
 def create_file(filename, path, data):
@@ -6,7 +7,7 @@ def create_file(filename, path, data):
     Creates a file entry in the given path.
     
     Raises an IOUtilException if:
-        - folder name already exists in path
+        - filename already exists in path
         - filename contains illegal characters
 
     :param filename: A string of the name of the file including extension
@@ -14,6 +15,28 @@ def create_file(filename, path, data):
     :param data: (possibly binary) data to be written to the file system 
     :return: None
     """
+
+    try:
+        conn = sqlite3.connect("db/database.sqlt")
+        c = conn.cursor()
+        d = conn.cursor()
+
+        selectStatement = "SELECT file_name from file WHERE file_path = %s AND file_name =  %s AND file_type = 'file';"
+        selectData = (path, filename)
+        c.execute(selectStatement,selectData)
+        fileList = c.fetchall()
+        if(len(fileList) == 0):
+            path = path + "/" + filename
+            statement = "INSERT INTO file (file_type, file_name, file_path,file_data) values (%s,%s,%s,%s)"
+            data = ("file", filename, path,data)
+            d.execute(statement,data)
+            conn.commit()
+        else:
+            raise IOUtilException("File Already Exists")
+    except:
+        print("Can not connect to database")
+
+    conn.close()
     return None
 
 
@@ -28,6 +51,29 @@ def create_new_folder(new_folder_name, path):
     :param path: Path to containing folder.
     :return: None
     """
+
+    try:
+        conn = sqlite3.connect("db/database.sqlt")
+        c = conn.cursor()
+        d = conn.cursor()
+
+        selectStatement = "SELECT file_name from file WHERE file_path = %s AND file_name =  %s AND file_type = 'folder';"
+        selectData = (path, new_folder_name)
+        c.execute(selectStatement,selectData)
+        fileList = c.fetchall()
+
+        if(len(fileList) == 0):
+            path = path + "/" + new_folder_name
+            statement = "INSERT INTO file (file_type, file_name, file_path) values (%s,%s,%s)"
+            data = ("folder", new_folder_name, path)
+            d.execute(statement,data)
+            conn.commit()
+        else:
+            raise IOUtilException("Folder Already Exists")
+    except:
+        print("Can not connect to database")
+
+    conn.close()
     return None
 
 
@@ -41,8 +87,25 @@ def list_dir(path):
     :param path: path to get data from
     :return: a list of dictionaries
     """
-    return [{"type": "folder", "name": "sample folder", "date_added": 1490401135674, "size_bytes": -1},
-            {"type": "file", "name": "sample file 1.txt", "date_added": 1490401135674, "size_bytes": 10649}]
+    fileList = []
+    try:
+        conn = sqlite3.connect("db/database.sqlt")
+        c = conn.cursor()
+        statement = "something"
+        data = ()
+        c.execute(statement,data)
+        aList = c.fetchall()
+
+        for file in aList:
+            fileList.append({"type":file[1],"name":file[2],"date_added":file[4]})
+
+    except:
+        print("Can not connect to database")
+
+    return fileList
+
+        #[{"type": "folder", "name": "sample folder", "date_added": 1490401135674, "size_bytes": -1},
+            #{"type": "file", "name": "sample file 1.txt", "date_added": 1490401135674, "size_bytes": 10649}]
 
 
 def get_file_contents_location(path):
