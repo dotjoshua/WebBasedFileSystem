@@ -1,3 +1,6 @@
+import random
+
+
 def create_file(filename, path, data):
     """
     Creates a file entry in the given path.
@@ -49,7 +52,7 @@ def get_file_contents_location(path):
     :param path: the path of the file including the filename and extension
     :return: a string of the true file
     """
-    return "SAMP-LEJP-G93R-DH3E"
+    return ["SAMP-LEJP-G93R-DH3E", "SAMP-LETX-TMDH-93JW"][random.randint(0, 1)]
 
 
 def delete_item(path):

@@ -83,9 +83,9 @@ def search():
 
 @app.route("/io/get_file_contents/", methods=["GET", "POST"])
 def get_file_contents():
-    path = request.args.get("path")
-    filename = io_utils.get_file_contents_location(path)
-    return send_from_directory("./file_data/", filename)
+    file = request.args.get("file")
+    file_location = io_utils.get_file_contents_location(file)
+    return send_from_directory("./file_data/", file_location)
 
 
 @app.route("/io/delete_item/", methods=["GET", "POST"])

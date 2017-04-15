@@ -30,6 +30,8 @@ function bind_events() {
     jsh.get("#upload").addEventListener("click", on_upload_click);
 
     jsh.get("#new_folder").addEventListener("click", on_new_folder_click);
+
+    jsh.addEventListener("alert_open", on_alert_open);
 }
 
 function open_path(path) {
@@ -88,6 +90,7 @@ function update_entry_table(entries, path) {
         table_entry.appendChild(date_added_cell);
         table_entry.setAttribute("date_added", date_added_text);
         table_entry.addEventListener("click", entry_click_handler);
+        table_entry.addEventListener("dblclick", entry_double_click_handler);
         entry_table.appendChild(table_entry);
     }
 }
@@ -111,6 +114,78 @@ function entry_click_handler(e) {
     };
 
     update_details_tray(img_url, filename, info);
+}
+
+function entry_double_click_handler(e) {
+    var tr = e.target.tagName === "TR" ? e.target : e.target.parentNode.tagName === "TR" ? e.target.parentNode : e.target.parentNode.parentNode;
+
+    if (tr.getAttribute("type") === "folder") {
+        open_path(cwd.concat(tr.getAttribute("name")));
+    } else {
+        try_image_load(tr, cwd.concat(tr.getAttribute("name")).join("/"));
+    }
+}
+
+function try_image_load(tr, file) {
+    var xhr = new XMLHttpRequest();
+    xhr.addEventListener("load", function() {
+        var reader = new FileReader();
+        reader.addEventListener("loadend", function() {
+            var img = new Image();
+            img.width = 1000;
+            img.addEventListener("load", function() {
+               new jsh.Alert({
+                    title: tr.getAttribute("name"),
+                    message: img,
+                    image: true,
+                    button_text: "done"
+               }).open();
+            });
+            img.addEventListener("error", function(e) {
+                try_text_load(tr, xhr.response);
+            });
+            img.src = reader.result;
+        });
+        reader.readAsDataURL(xhr.response);
+    });
+    xhr.open("GET", "io/get_file_contents/?file=" + file + "&cache=" + Math.random());
+    xhr.responseType = 'blob';
+    xhr.send();
+}
+
+function try_text_load(tr, file_blob) {
+    var reader = new FileReader();
+    reader.addEventListener("load", function() {
+        new jsh.Alert({
+            title: tr.getAttribute("name"),
+            message: reader.result,
+            large: true,
+            button_text: "done"
+        }).open();
+    });
+    reader.readAsBinaryString(file_blob);
+}
+
+function on_alert_open(e) {
+    var alert = e.detail.alert;
+    if (alert.args.large !== undefined) {
+        jsh.get("#jsh_alert_window").classList.remove("jsh_alert_window_image");
+
+        jsh.get("#jsh_alert_window").classList.add("jsh_alert_window_large");
+        jsh.get("#jsh_alert_message").classList.add("jsh_alert_message_large");
+        jsh.get("#jsh_alert_message").style.height = window.innerHeight * 0.7 + "px";
+    } else if (alert.args.image !== undefined) {
+        jsh.get("#jsh_alert_window").classList.remove("jsh_alert_window_large");
+        jsh.get("#jsh_alert_message").classList.remove("jsh_alert_message_large");
+        jsh.get("#jsh_alert_message").style.height = "";
+
+        jsh.get("#jsh_alert_window").classList.add("jsh_alert_window_image");
+    } else {
+        jsh.get("#jsh_alert_window").classList.remove("jsh_alert_window_large");
+        jsh.get("#jsh_alert_window").classList.remove("jsh_alert_window_image");
+        jsh.get("#jsh_alert_message").classList.remove("jsh_alert_message_large");
+        jsh.get("#jsh_alert_message").style.height = "";
+    }
 }
 
 function deselect_all_entries() {
@@ -356,4 +431,3 @@ function new_folder(name) {
         }
     }).send();
 }
-
