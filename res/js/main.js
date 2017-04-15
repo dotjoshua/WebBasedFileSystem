@@ -185,28 +185,37 @@ function try_image_load(tr, file) {
                }).open();
             });
             img.addEventListener("error", function(e) {
-                try_text_load(tr, xhr.response);
+                try_pdf_load(tr, xhr.response, reader.result);
             });
             img.src = reader.result;
         });
         reader.readAsDataURL(xhr.response);
     });
     xhr.open("GET", "io/get_file_contents/?file=" + file + "&cache=" + Math.random());
-    xhr.responseType = 'blob';
+    xhr.responseType = "blob";
     xhr.send();
 }
 
-function try_text_load(tr, file_blob) {
+function try_pdf_load(tr, file_blob, data_url) {
     var reader = new FileReader();
     reader.addEventListener("load", function() {
-        new jsh.Alert({
-            title: tr.getAttribute("name"),
-            message: reader.result.replace(/\n/g, "<br>"),
-            large: true,
-            button_text: "done"
-        }).open();
+        if (reader.result.substr(0, 7) === "%PDF-1.") {
+            window.open(data_url.replace("octet-stream", "pdf"));
+        } else {
+            try_text_load(tr, reader.result);
+        }
     });
-    reader.readAsBinaryString(file_blob);
+    reader.readAsText(file_blob);
+}
+
+function try_text_load(tr, contents) {
+    console.log(contents);
+    new jsh.Alert({
+        title: tr.getAttribute("name"),
+        message: contents.replace(/\n/g, "<br>"),
+        large: true,
+        button_text: "done"
+    }).open();
 }
 
 function on_alert_open(e) {
