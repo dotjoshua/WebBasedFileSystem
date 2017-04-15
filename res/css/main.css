@@ -222,7 +222,8 @@ body {
     border: 1px solid #eee;
 }
 
-#page_view > #header > #top > #search_tray {
+#page_view > #header > #top > #search_tray,
+#context_menu {
     position: absolute;
     top: 55px;
     right: 15px;
@@ -234,7 +235,8 @@ body {
     box-sizing: border-box;
 }
 
-#page_view > #header > #top > #search_tray > .result {
+#page_view > #header > #top > #search_tray > .result,
+#context_menu > .item {
     padding: 10px;
     box-sizing: border-box;
     text-align: left;
@@ -242,11 +244,13 @@ body {
     cursor: pointer;
 }
 
-#page_view > #header > #top > #search_tray > .result:hover {
+#page_view > #header > #top > #search_tray > .result:hover,
+#context_menu > .item:hover {
     background: #f8f8f8;
 }
 
-#page_view > #header > #top > #search_tray > .result:not(:last-child) {
+#page_view > #header > #top > #search_tray > .result:not(:last-child),
+#context_menu > .item:not(:last-child) {
     border-bottom: 1px solid #eee;
 }
 
@@ -312,6 +316,12 @@ body {
     width: 0;
     height: 100%;
     background: #4b84c3;
+}
+
+#context_menu {
+    width: 200px;
+    position: fixed;
+    outline: none;
 }
 
 .jsh_alert_window_large {

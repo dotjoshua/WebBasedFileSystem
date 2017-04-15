@@ -91,6 +91,7 @@ function update_entry_table(entries, path) {
         table_entry.setAttribute("date_added", date_added_text);
         table_entry.addEventListener("click", entry_click_handler);
         table_entry.addEventListener("dblclick", entry_double_click_handler);
+        table_entry.addEventListener("contextmenu", entry_context_menu_handler);
         entry_table.appendChild(table_entry);
     }
 }
@@ -116,8 +117,50 @@ function entry_click_handler(e) {
     update_details_tray(img_url, filename, info);
 }
 
+function entry_context_menu_handler(e) {
+    e.preventDefault();
+    var context_menu = document.createElement("div");
+    context_menu.addEventListener("focusout", context_menu_focus_out_handler);
+    context_menu.id = "context_menu";
+    context_menu.setAttribute("tabindex", "-1");
+    context_menu.style.top = e.clientY + "px";
+    context_menu.style.left = e.clientX + 10 + "px";
+    document.body.appendChild(context_menu);
+    context_menu.focus();
+
+    var item = document.createElement("div");
+    item.classList.add("item");
+    item.innerText = "select";
+    item.addEventListener("click", function() {
+        entry_click_handler(e);
+        context_menu.remove();
+    });
+    context_menu.appendChild(item);
+
+    item = document.createElement("div");
+    item.classList.add("item");
+    item.innerText = "open";
+    item.addEventListener("click", function() {
+        entry_double_click_handler(e);
+        context_menu.remove();
+    });
+    context_menu.appendChild(item);
+
+    item = document.createElement("div");
+    item.classList.add("item");
+    item.innerText = "delete";
+    item.style.color = "#a00";
+    context_menu.appendChild(item);
+}
+
+function context_menu_focus_out_handler(e) {
+    console.log(e);
+    e.target.remove();
+}
+
 function entry_double_click_handler(e) {
-    var tr = e.target.tagName === "TR" ? e.target : e.target.parentNode.tagName === "TR" ? e.target.parentNode : e.target.parentNode.parentNode;
+    var tr = e.target.tagName === "TR" ? e.target :
+        e.target.parentNode.tagName === "TR" ? e.target.parentNode : e.target.parentNode.parentNode;
 
     if (tr.getAttribute("type") === "folder") {
         open_path(cwd.concat(tr.getAttribute("name")));
