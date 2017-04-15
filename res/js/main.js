@@ -180,52 +180,79 @@ function try_image_load(tr, file) {
                new jsh.Alert({
                     title: tr.getAttribute("name"),
                     message: img,
-                    image: true,
+                    medium: true,
                     button_text: "done"
                }).open();
             });
             img.addEventListener("error", function(e) {
-                try_text_load(tr, xhr.response);
+                try_pdf_load(tr, xhr.response, reader.result);
             });
             img.src = reader.result;
         });
         reader.readAsDataURL(xhr.response);
     });
     xhr.open("GET", "io/get_file_contents/?file=" + file + "&cache=" + Math.random());
-    xhr.responseType = 'blob';
+    xhr.responseType = "blob";
     xhr.send();
 }
 
-function try_text_load(tr, file_blob) {
+function try_pdf_load(tr, file_blob, data_url) {
     var reader = new FileReader();
     reader.addEventListener("load", function() {
-        new jsh.Alert({
-            title: tr.getAttribute("name"),
-            message: reader.result.replace(/\n/g, "<br>"),
-            large: true,
-            button_text: "done"
-        }).open();
+        if (reader.result.substr(0, 7) === "%PDF-1.") {
+            var bytes_string = atob(data_url.split(',')[1]);
+            var array_buffer = new ArrayBuffer(bytes_string.length);
+            var int_array = new Uint8Array(array_buffer);
+            for (var i = 0; i < bytes_string.length; i++) {
+                int_array[i] = bytes_string.charCodeAt(i);
+            }
+            var inline_blob = new Blob([array_buffer], {type: "application/pdf"});
+            var blob_url = URL.createObjectURL(inline_blob);
+
+            var pdf_frame = document.createElement("iframe");
+            pdf_frame.id = "pdf_frame";
+            pdf_frame.frameBorder = 0;
+            pdf_frame.src = blob_url;
+
+            new jsh.Alert({
+                title: tr.getAttribute("name"),
+                message: pdf_frame,
+                button_text: "done",
+                large: true
+            }).open();
+        } else {
+            try_text_load(tr, reader.result);
+        }
     });
-    reader.readAsBinaryString(file_blob);
+    reader.readAsText(file_blob);
+}
+
+function try_text_load(tr, contents) {
+    new jsh.Alert({
+        title: tr.getAttribute("name"),
+        message: contents.replace(/\n/g, "<br>"),
+        large: true,
+        button_text: "done"
+    }).open();
 }
 
 function on_alert_open(e) {
     var alert = e.detail.alert;
     if (alert.args.large !== undefined) {
-        jsh.get("#jsh_alert_window").classList.remove("jsh_alert_window_image");
+        jsh.get("#jsh_alert_window").classList.remove("jsh_alert_window_medium");
 
         jsh.get("#jsh_alert_window").classList.add("jsh_alert_window_large");
         jsh.get("#jsh_alert_message").classList.add("jsh_alert_message_large");
         jsh.get("#jsh_alert_message").style.height = window.innerHeight * 0.7 + "px";
-    } else if (alert.args.image !== undefined) {
+    } else if (alert.args.medium !== undefined) {
         jsh.get("#jsh_alert_window").classList.remove("jsh_alert_window_large");
         jsh.get("#jsh_alert_message").classList.remove("jsh_alert_message_large");
         jsh.get("#jsh_alert_message").style.height = "";
 
-        jsh.get("#jsh_alert_window").classList.add("jsh_alert_window_image");
+        jsh.get("#jsh_alert_window").classList.add("jsh_alert_window_medium");
     } else {
         jsh.get("#jsh_alert_window").classList.remove("jsh_alert_window_large");
-        jsh.get("#jsh_alert_window").classList.remove("jsh_alert_window_image");
+        jsh.get("#jsh_alert_window").classList.remove("jsh_alert_window_medium");
         jsh.get("#jsh_alert_message").classList.remove("jsh_alert_message_large");
         jsh.get("#jsh_alert_message").style.height = "";
     }
