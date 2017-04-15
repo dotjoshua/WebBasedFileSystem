@@ -158,7 +158,7 @@ function try_text_load(tr, file_blob) {
     reader.addEventListener("load", function() {
         new jsh.Alert({
             title: tr.getAttribute("name"),
-            message: reader.result,
+            message: reader.result.replace(/\n/g, "<br>"),
             large: true,
             button_text: "done"
         }).open();

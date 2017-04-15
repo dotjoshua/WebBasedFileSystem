@@ -316,7 +316,7 @@ body {
 
 .jsh_alert_window_large {
     max-height: 90% !important;
-    max-width: 90% !important;
+    max-width: 1000px !important;
 }
 
 .jsh_alert_window_image {
