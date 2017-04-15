@@ -1,9 +1,10 @@
 from flask import *
 import json
 import io_utils
-import io
+import hashlib
 
 DEBUG = True
+UPLOAD_PASSWORD = "affd85a2baf19499a0ecf7237970343f5287c449dbbfc6015a5228fae8479f7a"
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024  # 1GB
@@ -41,6 +42,11 @@ def upload():
 
     try:
         filename = request.headers.get("filename")
+        password = hashlib.sha256(request.headers.get("password").encode("ascii")).hexdigest()
+
+        if password != UPLOAD_PASSWORD:
+            raise io_utils.IOUtilException("Invalid password")
+
         path = request.headers.get("path")
         data = request.data
         io_utils.create_file(filename, path, data)

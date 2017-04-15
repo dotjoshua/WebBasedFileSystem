@@ -154,13 +154,13 @@ function entry_context_menu_handler(e) {
 }
 
 function context_menu_focus_out_handler(e) {
-    console.log(e);
     e.target.remove();
 }
 
 function entry_double_click_handler(e) {
     var tr = e.target.tagName === "TR" ? e.target :
-        e.target.parentNode.tagName === "TR" ? e.target.parentNode : e.target.parentNode.parentNode;
+        e.target.parentNode.tagName === "TR" ? e.target.parentNode :
+            e.target.parentNode.parentNode;
 
     if (tr.getAttribute("type") === "folder") {
         open_path(cwd.concat(tr.getAttribute("name")));
@@ -340,6 +340,12 @@ function on_upload_click(e) {
     upload_input.type = "file";
     contents.appendChild(upload_input);
 
+    var upload_password = document.createElement("input");
+    upload_password.id = "upload_password";
+    upload_password.type = "password";
+    upload_password.setAttribute("placeholder", "password");
+    contents.appendChild(upload_password);
+
     var upload_progress_outer = document.createElement("div");
     upload_progress_outer.id = "upload_progress_outer";
     upload_progress_outer.classList.add("jsh_display_none");
@@ -356,7 +362,8 @@ function on_upload_click(e) {
         button_text: "upload",
         button_callback: function() {
             var file = document.getElementById("upload_input").files[0];
-            upload_file(file);
+            var password = document.getElementById("upload_password").value;
+            upload_file(file, password);
         }
     }).open();
 }
@@ -417,7 +424,7 @@ function search(query) {
     }).send();
 }
 
-function upload_file(file) {
+function upload_file(file, password) {
     jsh.get("#upload_progress_outer").classList.remove("jsh_display_none");
     setTimeout(function() {
         jsh.get("#upload_progress_outer").classList.remove("jsh_transparent");
@@ -426,7 +433,6 @@ function upload_file(file) {
     var request = new XMLHttpRequest();
     request.onloadend = function() {
         var response = JSON.parse(request.responseText);
-
         if (response["error"] === undefined) {
             open_path(cwd);
             new jsh.Alert({
@@ -447,6 +453,7 @@ function upload_file(file) {
 
     request.open("POST", "io/upload/", true);
     request.setRequestHeader("filename", file.name);
+    request.setRequestHeader("password", password);
     request.setRequestHeader("path", jsh.str("/{}/", cwd.join("/")));
     request.setRequestHeader("Content-Type", "application/octet-stream");
     request.send(file);

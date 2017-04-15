@@ -287,7 +287,8 @@ body {
     background-image: url(../img/file_icon.png)
 }
 
-#new_folder_name_input {
+#new_folder_name_input,
+#upload_password {
     padding: 5px;
     height: 100%;
     box-sizing: border-box;
@@ -298,6 +299,11 @@ body {
     background-color: #eee;
     outline: none;
     margin-bottom: 5px;
+}
+
+#upload_password {
+    margin-top: 5px;
+    display: block;
 }
 
 #upload_progress_outer {
