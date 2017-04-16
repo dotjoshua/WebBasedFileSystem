@@ -149,6 +149,9 @@ function entry_context_menu_handler(e) {
     item = document.createElement("div");
     item.classList.add("item");
     item.innerText = "delete";
+    item.addEventListener("click", function() {
+        delete_item(e);
+    });
     item.style.color = "#a00";
     context_menu.appendChild(item);
 }
@@ -499,6 +502,33 @@ function new_folder(name) {
                     message: "Folder created!",
                     title: "Success"
                 }).open();
+            } else {
+                new jsh.Alert({
+                    message: response["error"],
+                    title: "Error"
+                }).open();
+            }
+        }
+    }).send();
+}
+
+function delete_item(e) {
+    var tr = e.target.tagName === "TR" ? e.target :
+        e.target.parentNode.tagName === "TR" ? e.target.parentNode :
+            e.target.parentNode.parentNode;
+
+    new jsh.Request({
+        url: "io/delete_item",
+        data: {
+            path: tr.getAttribute("path")
+        }, callback: function(response) {
+            if (response["error"] === undefined) {
+                open_path(cwd);
+                new jsh.Alert({
+                    message: jsh.str("{} has been deleted.", tr.getAttribute("path")),
+                    title: "Success"
+                }).open();
+                open_path(cwd);
             } else {
                 new jsh.Alert({
                     message: response["error"],
