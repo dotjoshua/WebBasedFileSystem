@@ -27,8 +27,8 @@ def create_file(filename, path, data):
         fileList = c.fetchall()
         if(len(fileList) == 0):
             path = path + "/" + filename
-            statement = "INSERT INTO file (file_type, file_name, file_path,file_data) values (%s,%s,%s,%s)"
-            data = ("file", filename, path,data)
+            statement = "INSERT INTO file (file_type, file_name, file_path,file_data, file_size) values (%s,%s,%s,%s,%s)"
+            data = ("file", filename, path,data,len(data))
             d.execute(statement,data)
             conn.commit()
         else:
@@ -91,17 +91,18 @@ def list_dir(path):
     try:
         conn = sqlite3.connect("db/database.sqlt")
         c = conn.cursor()
-        statement = "something"
-        data = ()
+        statement = "SELECT * FROM file WHERE file_path = %s;"
+        data = (path,)
         c.execute(statement,data)
         aList = c.fetchall()
 
         for file in aList:
-            fileList.append({"type":file[1],"name":file[2],"date_added":file[4]})
+            fileList.append({"type":file[1],"name":file[2],"date_added":file[4],"size_bytes":file[6]})
 
     except:
         print("Can not connect to database")
 
+    conn.close()
     return fileList
 
         #[{"type": "folder", "name": "sample folder", "date_added": 1490401135674, "size_bytes": -1},
@@ -126,6 +127,30 @@ def delete_item(path):
     :param path: A string of a path. May contain a filename or a folder. 
     :return: None
     """
+    try:
+        conn = sqlite3.connect("db/database.sqlt")
+        c = conn.cursor()
+        d = conn.cursor()
+        statement = "SELECT * FROM file WHERE file_path = %s;"
+        data = (path,)
+        c.execute(statement,data)
+        aList = c.fetchall();
+        for file in aList:
+            if(file[1] == "file"):
+                deleteStatement = "DELETE FROM file WHERE file_name = %s AND file_type = 'file';"
+                deleteData = (file[2])
+                d.execute(deleteStatement,deleteData)
+            else:
+                #recursive call to delete everything in the folder we are trying to delete
+                delete_item(path + "/" + file[2])
+                deleteStatement = "DELETE FROM file WHERE file_name = %s AND file_type = 'folder';"
+                deleteData = (file[2])
+                d.execute(deleteStatement, deleteData)
+    except:
+        print("Can not connect to database")
+
+    conn.close()
+
     return None
 
 
@@ -139,8 +164,12 @@ def search(search_query):
     :param search_query: a string of the user's search query.
     :return: a list of the full paths of 1-10 items. 
     """
+
+    pathList = []
     if len(search_query) < 4:
         raise IOUtilException("query too short")
+
+
 
     return ["/search/result/item/1.txt", "/search/result/item/2.txt", "/search/result/item/3.txt"]
 
