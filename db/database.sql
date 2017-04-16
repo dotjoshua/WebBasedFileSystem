@@ -4,7 +4,8 @@ CREATE TABLE file (
 	file_name VARCHAR(255),
 	file_path VARCHAR(255),
 	date_added NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	file_data VARCHAR
+	file_data VARCHAR,
+	file_size INTEGER
 );
 
 CREATE TABLE keyword (
