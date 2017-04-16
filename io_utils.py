@@ -26,7 +26,6 @@ def create_file(filename, path, data):
         c.execute(selectStatement,selectData)
         fileList = c.fetchall()
         if(len(fileList) == 0):
-            path = path + "/" + filename
             statement = "INSERT INTO file (file_type, file_name, file_path,file_data, file_size) values (%s,%s,%s,%s,%s)"
             data = ("file", filename, path,data,len(data))
             d.execute(statement,data)
@@ -63,7 +62,6 @@ def create_new_folder(new_folder_name, path):
         fileList = c.fetchall()
 
         if(len(fileList) == 0):
-            path = path + "/" + new_folder_name
             statement = "INSERT INTO file (file_type, file_name, file_path) values (%s,%s,%s)"
             data = ("folder", new_folder_name, path)
             d.execute(statement,data)
