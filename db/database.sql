@@ -1,4 +1,4 @@
-CREATE TABLE file (
+CREATE TABLE IF NOT EXISTS file (
 	file_id INTEGER PRIMARY KEY AUTOINCREMENT,
 	file_type VARCHAR(13),
 	file_name VARCHAR(255),
@@ -7,11 +7,10 @@ CREATE TABLE file (
 	file_data VARCHAR,
 	file_size INTEGER
 );
-
-CREATE TABLE keyword (
+CREATE TABLE IF NOT EXISTS keyword (
 	keyword_id INTEGER PRIMARY KEY AUTOINCREMENT,
 	file_id INTEGER,
 	keyword VARCHAR(255),
 	count INTEGER,
-	FOREIGN KEY (file_id) REFERENCES file(file_id)
+	FOREIGN KEY (file_id) REFERENCES file(file_id) ON DELETE CASCADE
 );

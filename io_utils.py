@@ -1,5 +1,12 @@
 import random
 import sqlite3
+import os
+import time,calendar
+import file_parser
+from io import StringIO, BytesIO
+
+PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
+DATABASE = os.path.join(PROJECT_ROOT, 'db', 'database.sqlt')
 
 
 def create_file(filename, path, data):
@@ -17,26 +24,64 @@ def create_file(filename, path, data):
     """
 
     try:
-        conn = sqlite3.connect("db/database.sqlt")
+        conn = sqlite3.connect(DATABASE)
         c = conn.cursor()
-        d = conn.cursor()
-
-        selectStatement = "SELECT file_name from file WHERE file_path = %s AND file_name =  %s AND file_type = 'file';"
+        selectStatement = "SELECT file_name from file WHERE file_path = ? AND file_name =  ? AND file_type = 'file';"
         selectData = (path, filename)
         c.execute(selectStatement,selectData)
         fileList = c.fetchall()
+        decoded_data = data.decode("utf-8", "ignore")
+
         if(len(fileList) == 0):
-            statement = "INSERT INTO file (file_type, file_name, file_path,file_data, file_size) values (%s,%s,%s,%s,%s)"
-            data = ("file", filename, path,data,len(data))
-            d.execute(statement,data)
+
+            #insert file
+            statement = "INSERT INTO file (file_type, file_name, file_path,file_data, file_size) values (?,?,?,?,?)"
+            values = ("file", filename, path ,data,len(data))
+            c.execute(statement,values)
             conn.commit()
+
+            #insert keywords
+            words = None
+            fileExtension = filename.split(".")[-1]
+            if fileExtension == "pdf":
+                words = file_parser.get_word_counts(file_parser.pdf_to_text(BytesIO(data)))
+            elif fileExtension == "txt":
+                words = file_parser.get_word_counts(decoded_data)
+            file_id_select = "SELECT file_id FROM file WHERE file_path = ? and file_name = ? and file_type = 'file' and file_data = ? and file_size = ?"
+            file_id_values = (path, filename, data, len(data))
+            c.execute(file_id_select, file_id_values)
+            file_id = c.fetchone()[0]
+            f = open("./file_data/" + str(file_id), "wb")
+            f.write(data)
+            c.close()
+
+            if words:
+                insert_keywords(words,file_id)
+
+
         else:
             raise IOUtilException("File Already Exists")
-    except:
-        print("Can not connect to database")
+        conn.close()
+    except Exception as e:
+        raise IOUtilException(str(e))
 
-    conn.close()
-    return None
+
+def insert_keywords(keywords, file_id):
+    try:
+        conn = sqlite3.connect(DATABASE)
+        c = conn.cursor()
+        insert_statement = "INSERT INTO keyword (file_id, keyword, count) VALUES (?,?,?)"
+        for word in keywords:
+            insert_values = (file_id,word[0], int(word[1]))
+            c.execute(insert_statement, insert_values)
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        raise IOUtilException(str(e))
+
+
+
+
 
 
 def create_new_folder(new_folder_name, path):
@@ -52,27 +97,25 @@ def create_new_folder(new_folder_name, path):
     """
 
     try:
-        conn = sqlite3.connect("db/database.sqlt")
+        conn = sqlite3.connect(DATABASE)
         c = conn.cursor()
-        d = conn.cursor()
 
-        selectStatement = "SELECT file_name from file WHERE file_path = %s AND file_name =  %s AND file_type = 'folder';"
+        selectStatement = "SELECT file_name from file WHERE file_path = ? AND file_name =  ? AND file_type = 'folder';"
         selectData = (path, new_folder_name)
         c.execute(selectStatement,selectData)
         fileList = c.fetchall()
-
         if(len(fileList) == 0):
-            statement = "INSERT INTO file (file_type, file_name, file_path) values (%s,%s,%s)"
+            statement = "INSERT INTO file (file_type, file_name, file_path) values (?,?,?)"
             data = ("folder", new_folder_name, path)
-            d.execute(statement,data)
+            c.execute(statement,data)
             conn.commit()
+            conn.close()
         else:
             raise IOUtilException("Folder Already Exists")
-    except:
-        print("Can not connect to database")
+    except Exception as e:
+        raise IOUtilException(str(e))
 
-    conn.close()
-    return None
+
 
 
 def list_dir(path):
@@ -87,21 +130,22 @@ def list_dir(path):
     """
     fileList = []
     try:
-        conn = sqlite3.connect("db/database.sqlt")
+        conn = sqlite3.connect(DATABASE)
         c = conn.cursor()
-        statement = "SELECT * FROM file WHERE file_path = %s;"
+        statement = "SELECT * FROM file WHERE file_path LIKE ?"
         data = (path,)
         c.execute(statement,data)
         aList = c.fetchall()
-
         for file in aList:
-            fileList.append({"type":file[1],"name":file[2],"date_added":file[4],"size_bytes":file[6]})
+            p='%Y-%m-%d %H:%M:%S'
+            epoch = calendar.timegm(time.strptime(file[4], p)) * 1000
+            fileList.append({"type":file[1],"name":file[2],"date_added":epoch,"size_bytes": file[6] if file[6] != None else -1})
+        conn.close()
+        return fileList
+    except Exception as e:
+        raise IOUtilException(str(e))
 
-    except:
-        print("Can not connect to database")
 
-    conn.close()
-    return fileList
 
         #[{"type": "folder", "name": "sample folder", "date_added": 1490401135674, "size_bytes": -1},
             #{"type": "file", "name": "sample file 1.txt", "date_added": 1490401135674, "size_bytes": 10649}]
@@ -114,7 +158,16 @@ def get_file_contents_location(path):
     :param path: the path of the file including the filename and extension
     :return: a string of the true file
     """
-    return ["SAMP-LEJP-G93R-DH3E", "SAMP-LETX-TMDH-93JW", "SAMP-LEPD-FWLE-2E2H"][random.randint(0, 2)]
+    conn = sqlite3.connect(DATABASE)
+    c = conn.cursor()
+    file_name = path.strip().split("/")[-1]
+    file_path =  "/" + ("/".join(path.strip().split("/")[:-1]))+ "/"
+    select_values = (file_path,file_name)
+    print(select_values)
+    select_statement = "SELECT file_id FROM file WHERE file_path = ? AND file_name = ?"
+    c.execute(select_statement, select_values)
+    file_name = c.fetchone()[0]
+    return str(file_name)
 
 
 def delete_item(path):
@@ -126,31 +179,58 @@ def delete_item(path):
     :return: None
     """
     try:
-        conn = sqlite3.connect("db/database.sqlt")
+        conn = sqlite3.connect(DATABASE)
         c = conn.cursor()
-        d = conn.cursor()
-        statement = "SELECT * FROM file WHERE file_path = %s;"
-        data = (path,)
-        c.execute(statement,data)
-        aList = c.fetchall();
-        for file in aList:
-            if(file[1] == "file"):
-                deleteStatement = "DELETE FROM file WHERE file_name = %s AND file_type = 'file';"
-                deleteData = (file[2])
-                d.execute(deleteStatement,deleteData)
+        if path[:2] == "//":
+            path1 = path[:2]
+        else:
+            path1 = ("/".join(path.strip().split("/")[:-1]))+ "/"
+
+        if path[-1] == "/":
+            folder = True
+            file_name = path.strip()[:-1].split("/")[-1]
+            path1 = ("/".join(path[:-1].strip().split("/")[:-1]))+ "/"
+            if path1 == "//":
+                pathDelete = "/"
             else:
-                #recursive call to delete everything in the folder we are trying to delete
-                delete_item(path + "/" + file[2])
-                deleteStatement = "DELETE FROM file WHERE file_name = %s AND file_type = 'folder';"
-                deleteData = (file[2])
-                d.execute(deleteStatement, deleteData)
-    except:
-        print("Can not connect to database")
+                pathDelete = path1
+        else:
+            file_name = path.strip().split("/")[-1]
+            folder = False
+        statement = "SELECT file_name, file_type, file_path FROM file WHERE file_path = ?;"
+        values = (path1,)
+        c.execute(statement,values)
+        aList = c.fetchall()
+        deleteKeyword = "DELETE FROM keyword WHERE file_id = ?"
+        for file in aList:
+            if(file[1] == "file" and file[0] == file_name and not folder):
+                deleteStatement = "DELETE FROM file WHERE file_name = ? AND file_type = 'file' and file_path = ?;"
+                selectIDStatement = "SELECT file_id FROM file WHERE file_name = ? and file_type = 'file' and file_path = ?"
+                deleteData = (file[0], path1)
+                c.execute(selectIDStatement,deleteData)
+                file_id = c.fetchone()[0]
+                os.remove("./file_data/" + str(file_id))
+                c.execute(deleteKeyword, (file_id,))                 
+                c.execute(deleteStatement,deleteData)
 
-    conn.close()
+            elif (folder and file[0] == file_name):
+                deleteStatement = "DELETE FROM file WHERE file_name = ? AND file_type = 'folder';"
+                deleteFiles = "DELETE FROM file WHERE file_path LIKE ?"
+                select_file_id = "SELECT file_id from file where file_path LIKE ?"
 
-    return None
+                deleteData = (file[0],)
+                deleteFilesData = (pathDelete + file_name + "%",)
+                c.execute(select_file_id, deleteFilesData)
+                file_ids = c.fetchall()
+                for file_id in file_ids:
+                    c.execute(deleteKeyword, (file_id[0],))
+                c.execute(deleteStatement, deleteData)
+                c.execute(deleteFiles, deleteFilesData)
+        conn.commit()
+        conn.close()
 
+    except Exception as e:
+        raise IOUtilException(str(e))
 
 def search(search_query):
     """
@@ -166,10 +246,25 @@ def search(search_query):
     pathList = []
     if len(search_query) < 4:
         raise IOUtilException("query too short")
+    else:
+        conn = sqlite3.connect(DATABASE)
+        c = conn.cursor()
+        select_statement = "SELECT file_id FROM keyword WHERE keyword = ? ORDER BY count DESC LIMIT 10"
+        c.execute(select_statement, (search_query,))
+        file_ids = c.fetchall()
+        file_paths = []
+        select_file_statement = "SELECT file_path, file_name FROM file WHERE file_id = ?"
+        for fid in file_ids:
+            c.execute(select_file_statement, (fid[0],))
+            paths = c.fetchone()
+            full_path = paths[0] + paths[1]
+            file_paths.append(full_path)
+        return file_paths
+        
 
+        conn.close()
 
-
-    return ["/search/result/item/1.txt", "/search/result/item/2.txt", "/search/result/item/3.txt"]
+    return []
 
 
 class IOUtilException(Exception):
