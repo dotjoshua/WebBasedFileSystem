@@ -35,15 +35,15 @@ function bind_events() {
     jsh.addEventListener("alert_open", on_alert_open);
 }
 
-function open_path(path) {
+function open_path(path, selected) {
     deselect_all_entries();
     set_cwd(path);
     get_path_contents(path, function(response) {
-        update_entry_table(response, path);
+        update_entry_table(response, path, selected);
     });
 }
 
-function update_entry_table(entries, path) {
+function update_entry_table(entries, path, selected) {
     var entry_table = jsh.get("#file_view > #entry_table").children[0];
     for (var i = entry_table.children.length - 1; i > 0; i--) {
         entry_table.children[i].remove()
@@ -94,6 +94,8 @@ function update_entry_table(entries, path) {
         table_entry.addEventListener("dblclick", entry_double_click_handler);
         table_entry.addEventListener("contextmenu", entry_context_menu_handler);
         entry_table.appendChild(table_entry);
+
+        if (selected !== undefined && entries[i].name === selected) table_entry.click();
     }
 }
 
@@ -429,7 +431,6 @@ function search(query) {
         }, callback: function(response) {
             var search_tray = jsh.get("#search_tray");
             search_tray.innerHTML = "";
-            console.log(response);
             if (response["error"] === undefined) {
                 var files = response["files"];
                 for (var i = 0; i < files.length; i++) {
@@ -444,7 +445,7 @@ function search(query) {
                         var path_list = e.target.getAttribute("path").split("/").filter(function(x) {
                             return x !== ''
                         });
-                        open_path(path_list);
+                        open_path(path_list, filename);
                     });
                     search_tray.appendChild(result);
                 }
