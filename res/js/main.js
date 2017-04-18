@@ -102,6 +102,10 @@ function update_entry_table(entries, path, selected) {
 function entry_click_handler(e) {
     e.stopPropagation();
 
+    new jsh.Alert({
+        title: "Loading..."
+    }).open();
+
     var target = e.target;
     while (target.tagName !== "TR") {
         target = target.parentNode;
@@ -467,6 +471,7 @@ function search(query) {
 }
 
 function upload_file(file, password) {
+    jsh.get("#upload_password").remove();
     jsh.get("#upload_progress_outer").classList.remove("jsh_display_none");
     setTimeout(function() {
         jsh.get("#upload_progress_outer").classList.remove("jsh_transparent");
