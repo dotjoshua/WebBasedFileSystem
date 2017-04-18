@@ -338,6 +338,21 @@ body {
     outline: none;
 }
 
+.monospace {
+    font-family: monospace;
+    background: #333;
+    color: #fff;
+    display: inline-block;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.tab {
+    display: inline-block;
+    width: 40px;
+}
+
 .jsh_alert_window_large {
     max-height: 90% !important;
     max-width: 1000px !important;

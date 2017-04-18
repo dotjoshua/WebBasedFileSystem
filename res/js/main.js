@@ -238,9 +238,12 @@ function try_pdf_load(tr, file_blob, data_url) {
 }
 
 function try_text_load(tr, contents) {
+    var monospace = document.createElement("span");
+    monospace.classList.add("monospace");
+    monospace.innerHTML = contents.replace(/\n/g, "<br>").replace(/\t/g, "<span class=\"tab\"></span>");
     new jsh.Alert({
         title: tr.getAttribute("name"),
-        message: contents.replace(/\n/g, "<br>"),
+        message: monospace,
         large: true,
         button_text: "done"
     }).open();
