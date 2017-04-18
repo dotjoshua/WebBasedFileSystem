@@ -445,7 +445,7 @@ function search(query) {
                         var path_list = e.target.getAttribute("path").split("/").filter(function(x) {
                             return x !== ''
                         });
-                        open_path(path_list, filename);
+                        open_path(path_list, e.target.innerText);
                     });
                     search_tray.appendChild(result);
                 }
