@@ -102,10 +102,6 @@ function update_entry_table(entries, path, selected) {
 function entry_click_handler(e) {
     e.stopPropagation();
 
-    new jsh.Alert({
-        title: "Loading..."
-    }).open();
-
     var target = e.target;
     while (target.tagName !== "TR") {
         target = target.parentNode;
@@ -176,6 +172,9 @@ function entry_double_click_handler(e) {
     if (tr.getAttribute("type") === "folder") {
         open_path(cwd.concat(tr.getAttribute("name")));
     } else {
+        new jsh.Alert({
+            title: "Loading..."
+        }).open();
         try_image_load(tr, cwd.concat(tr.getAttribute("name")).join("/"));
     }
 }
