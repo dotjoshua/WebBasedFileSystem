@@ -151,7 +151,6 @@ def get_file_contents_location(path):
     file_name = path.strip().split("/")[-1]
     file_path = "/" + ("/".join(path.strip().split("/")[:-1])) + "/"
     select_values = (file_path, file_name)
-    print(select_values)
     select_statement = "SELECT file_id FROM file WHERE file_path = ? AND file_name = ?"
     c.execute(select_statement, select_values)
     file_name = c.fetchone()[0]
@@ -232,14 +231,17 @@ def search(search_query):
     :param search_query: a string of the user's search query.
     :return: a list of the full paths of 1-10 items. 
     """
+    search_queries = search_query.lower().split()
 
     if len(search_query) < 4:
         raise IOUtilException("query too short")
     else:
         conn = sqlite3.connect(DATABASE)
         c = conn.cursor()
-        select_statement = "SELECT file_id FROM keyword WHERE keyword = ? ORDER BY count DESC LIMIT 10"
-        c.execute(select_statement, (search_query,))
+        question_marks = ",".join(["?"] * len(search_queries))
+        select_statement = "SELECT DISTINCT file_id FROM keyword WHERE keyword IN ({}) ORDER BY count DESC LIMIT 10"\
+            .format(question_marks)
+        c.execute(select_statement, search_queries)
         file_ids = c.fetchall()
         file_paths = []
         select_file_statement = "SELECT file_path, file_name FROM file WHERE file_id = ?"
@@ -249,6 +251,9 @@ def search(search_query):
             full_path = paths[0] + paths[1]
             file_paths.append(full_path)
         conn.close()
+
+        if not len(file_paths):
+            raise IOUtilException("no results")
         return file_paths
 
 
