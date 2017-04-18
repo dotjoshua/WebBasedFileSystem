@@ -428,10 +428,12 @@ function search(query) {
         }, callback: function(response) {
             var search_tray = jsh.get("#search_tray");
             search_tray.innerHTML = "";
+            console.log(response);
             if (response["error"] === undefined) {
-                for (var i = 0; i < response.length; i++) {
-                    var filename = response[i].split("/").pop();
-                    var path = response[i].slice(0, response[i].length - filename.length);
+                var files = response["files"];
+                for (var i = 0; i < files.length; i++) {
+                    var filename = files[i].split("/").pop();
+                    var path = files[i].slice(0, files[i].length - filename.length);
 
                     var result = document.createElement("div");
                     result.innerText = filename;
@@ -445,10 +447,17 @@ function search(query) {
                     });
                     search_tray.appendChild(result);
                 }
+                var time_div = document.createElement("div");
+                time_div.innerText = "found in: " + response["time"] + "s";
+                time_div.classList.add("result");
+                time_div.classList.add("disabled");
+                search_tray.appendChild(time_div);
+
             } else {
                 result = document.createElement("div");
                 result.innerText = response["error"];
                 result.classList.add("result");
+                result.classList.add("disabled");
                 search_tray.appendChild(result);
             }
         }

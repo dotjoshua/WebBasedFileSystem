@@ -1,8 +1,8 @@
 import sqlite3
 import os
-import time
 import calendar
 import file_parser
+import time
 from io import BytesIO
 
 PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
@@ -232,6 +232,7 @@ def search(search_query):
     :return: a list of the full paths of 1-10 items. 
     """
     search_queries = search_query.lower().split()
+    start = time.time()
 
     if len(search_query) < 4:
         raise IOUtilException("query too short")
@@ -254,7 +255,9 @@ def search(search_query):
 
         if not len(file_paths):
             raise IOUtilException("no results")
-        return file_paths
+
+        results = {"files": file_paths, "time": round(time.time() - start, 5)}
+        return results
 
 
 class IOUtilException(Exception):

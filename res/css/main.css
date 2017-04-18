@@ -244,6 +244,11 @@ body {
     cursor: pointer;
 }
 
+#page_view > #header > #top > #search_tray > .disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
 #page_view > #header > #top > #search_tray > .result:hover,
 #context_menu > .item:hover {
     background: #f8f8f8;
