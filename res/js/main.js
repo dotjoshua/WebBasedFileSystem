@@ -1,4 +1,5 @@
 var cwd = "";
+var cwd_contents = "";
 
 window.onload = function() {
     bind_events();
@@ -39,10 +40,15 @@ function bind_events() {
 }
 
 function open_path(path, selected) {
-    deselect_all_entries();
-    set_cwd(path);
+    if (path !== cwd) {
+        deselect_all_entries();
+        set_cwd(path);
+    }
     get_path_contents(path, function(response) {
-        update_entry_table(response, path, selected);
+        if (JSON.stringify(response) !== JSON.stringify(cwd_contents)) {
+            cwd_contents = response;
+            update_entry_table(response, path, selected);
+        }
     });
 }
 
