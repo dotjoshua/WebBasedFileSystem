@@ -98,6 +98,8 @@ def create_new_folder(new_folder_name, path):
             path_parts.append(new_folder)
         return
 
+    new_folder_name = new_folder_name.strip("/")
+
     try:
         conn = sqlite3.connect(DATABASE)
         c = conn.cursor()
