@@ -3,7 +3,7 @@ import json
 import io_utils
 import hashlib
 
-DEBUG = True
+DEBUG = False
 UPLOAD_PASSWORD = "affd85a2baf19499a0ecf7237970343f5287c449dbbfc6015a5228fae8479f7a"
 
 app = Flask(__name__)
@@ -109,4 +109,4 @@ if __name__ == "__main__":
     file_handler.setLevel(logging.WARNING)
     file_handler.setFormatter(Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
     app.logger.addHandler(file_handler)
-    app.run(debug=DEBUG)
+    app.run(host="0.0.0.0", debug=DEBUG)

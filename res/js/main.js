@@ -2,7 +2,8 @@ var cwd = "";
 
 window.onload = function() {
     bind_events();
-    open_path(["path", "to", "current folder"]);
+    jsh.pages.view.open();
+    open_path([""]);
 };
 
 function bind_events() {
