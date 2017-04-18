@@ -340,8 +340,6 @@ body {
 
 .monospace {
     font-family: monospace;
-    background: #333;
-    color: #fff;
     display: inline-block;
     width: 100%;
     padding: 10px;
