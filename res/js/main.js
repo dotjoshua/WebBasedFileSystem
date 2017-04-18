@@ -152,6 +152,7 @@ function entry_context_menu_handler(e) {
     item.innerText = "delete";
     item.addEventListener("click", function() {
         delete_item(e);
+        context_menu.remove();
     });
     item.style.color = "#a00";
     context_menu.appendChild(item);
@@ -491,6 +492,13 @@ function upload_file(file, password) {
         jsh.get("#upload_progress_inner").setAttribute("style", "width: " + percent + "%");
     }, false);
 
+    request.upload.addEventListener("load", function(e) {
+        new jsh.Alert({
+            message: "",
+            title: "Indexing..."
+        }).open();
+    }, false);
+
     request.open("POST", "io/upload/", true);
     request.setRequestHeader("filename", file.name);
     request.setRequestHeader("password", password);
@@ -508,10 +516,7 @@ function new_folder(name) {
         }, callback: function(response) {
             if (response["error"] === undefined) {
                 open_path(cwd);
-                new jsh.Alert({
-                    message: "Folder created!",
-                    title: "Success"
-                }).open();
+                new jsh.Alert().close();
             } else {
                 new jsh.Alert({
                     message: response["error"],
@@ -534,11 +539,7 @@ function delete_item(e) {
         }, callback: function(response) {
             if (response["error"] === undefined) {
                 open_path(cwd);
-                new jsh.Alert({
-                    message: jsh.str("{} has been deleted.", tr.getAttribute("path")),
-                    title: "Success"
-                }).open();
-                open_path(cwd);
+                new jsh.Alert().close();
             } else {
                 new jsh.Alert({
                     message: response["error"],
