@@ -72,6 +72,7 @@ function update_entry_table(entries, path, selected) {
         }
         size = +size.toFixed(2);
         size_cell.innerText = size === -1 ? "-" : jsh.str("{} {}", size, size_units[size_index]);
+        size_cell.classList.add("monospace");
 
         var date_added_cell = document.createElement("td");
         var date_added = new Date();
