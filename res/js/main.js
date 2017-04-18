@@ -87,7 +87,7 @@ function update_entry_table(entries, path) {
         table_entry.appendChild(name_cell);
         table_entry.setAttribute("name", entries[i].name);
         table_entry.appendChild(size_cell);
-        table_entry.setAttribute("size", size);
+        table_entry.setAttribute("size", jsh.str("{} {}", size, size_units[size_index]));
         table_entry.appendChild(date_added_cell);
         table_entry.setAttribute("date_added", date_added_text);
         table_entry.addEventListener("click", entry_click_handler);
