@@ -90,6 +90,14 @@ def create_new_folder(new_folder_name, path):
     :return: None
     """
 
+    if "/" in new_folder_name.strip("/"):
+        new_folders = new_folder_name.strip("/").split("/")
+        path_parts = path.split("/")
+        for new_folder in new_folders:
+            create_new_folder(new_folder, "/" + "/".join(path_parts).strip("/") + "/")
+            path_parts.append(new_folder)
+        return
+
     try:
         conn = sqlite3.connect(DATABASE)
         c = conn.cursor()
