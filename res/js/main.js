@@ -3,7 +3,7 @@ var cwd = "";
 window.onload = function() {
     bind_events();
     jsh.pages.view.open();
-    open_path([""]);
+    open_path([]);
 };
 
 function bind_events() {
