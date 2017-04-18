@@ -244,7 +244,7 @@ def search(search_query):
     search_queries = search_query.lower().split()
     start = time.time()
 
-    if len(search_query) < 4:
+    if len(search_query) <= 4:
         raise IOUtilException("query too short")
     else:
         conn = sqlite3.connect(DATABASE)
