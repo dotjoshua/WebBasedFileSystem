@@ -4,6 +4,9 @@ window.onload = function() {
     bind_events();
     jsh.pages.view.open();
     open_path([]);
+    setInterval(function() {
+        open_path(cwd);
+    }, 1000);
 };
 
 function bind_events() {
