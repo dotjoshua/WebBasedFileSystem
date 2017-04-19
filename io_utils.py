@@ -40,11 +40,10 @@ def create_file(filename, path, data):
             conn.commit()
 
             # insert keywords
-            words = None
             file_extension = filename.split(".")[-1]
             if file_extension == "pdf":
                 words = file_parser.get_word_counts(file_parser.pdf_to_text(BytesIO(data)))
-            elif file_extension == "txt":
+            else:
                 words = file_parser.get_word_counts(decoded_data)
             file_id_select = "SELECT file_id FROM file WHERE file_path = ? and file_name = ? and file_type = 'file' " \
                              "and file_data = ? and file_size = ?"

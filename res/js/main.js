@@ -250,7 +250,9 @@ function try_pdf_load(tr, file_blob, data_url) {
 function try_text_load(tr, contents) {
     var monospace = document.createElement("span");
     monospace.classList.add("monospace");
-    monospace.innerHTML = contents.replace(/\n/g, "<br>").replace(/\t/g, "<span class=\"tab\"></span>");
+    monospace.innerHTML = contents.replace(/\n/g, "<br>")
+        .replace(/\t/g, "<span class=\"tab\"></span>")
+        .replace(/ {4}/g, "<span class=\"tab\"></span>");
     new jsh.Alert({
         title: tr.getAttribute("name"),
         message: monospace,
