@@ -40,7 +40,7 @@ function bind_events() {
 }
 
 function open_path(path, selected) {
-    if (path !== cwd) {
+    if (path !== cwd && selected === undefined) {
         deselect_all_entries();
         set_cwd(path);
     }
