@@ -45,7 +45,7 @@ function open_path(path, selected) {
         set_cwd(path);
     }
     get_path_contents(path, function(response) {
-        if (JSON.stringify(response) !== JSON.stringify(cwd_contents)) {
+        if (JSON.stringify(response) !== JSON.stringify(cwd_contents) || selected !== undefined) {
             cwd_contents = response;
             update_entry_table(response, path, selected);
         }
