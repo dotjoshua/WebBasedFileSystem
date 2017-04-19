@@ -136,7 +136,7 @@ function entry_context_menu_handler(e) {
     context_menu.addEventListener("focusout", context_menu_focus_out_handler);
     context_menu.id = "context_menu";
     context_menu.setAttribute("tabindex", "-1");
-    context_menu.style.top = e.clientY + "px";
+    context_menu.style.top = Math.min(e.clientY, window.innerHeight - 130) + "px";
     context_menu.style.left = e.clientX + 10 + "px";
     document.body.appendChild(context_menu);
     context_menu.focus();
